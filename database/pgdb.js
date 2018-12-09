@@ -41,5 +41,15 @@ module.exports = pgPool => {
           return orderedFor(res.rows, contestIds, 'contestId')
         })
     },
+
+    getTotalVotesByNameIds(nameIds) {
+      return pgPool.query(`
+        select name_id, up, down from total_votes_by_name
+        where name_id = ANY($1)
+      `, [nameIds])
+        .then((res) => {
+          return orderedFor(res.rows, nameIds, 'nameId')
+        })
+    },
   }
 }
