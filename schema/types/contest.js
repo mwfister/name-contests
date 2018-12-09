@@ -3,9 +3,11 @@ const {
   GraphQLString,
   GraphQLNonNull,
   GraphQLID,
+  GraphQLList,
 } = require('graphql')
 
 const ContestStatusType = require('./contest-status')
+const NameType = require('./name')
 
 module.exports = new GraphQLObjectType({
   name: 'ContestType',
@@ -17,5 +19,11 @@ module.exports = new GraphQLObjectType({
     description: { type: GraphQLString },
     status: { type: new GraphQLNonNull(ContestStatusType) },
     createdAt: { type: new GraphQLNonNull(GraphQLString) },
+    names: {
+      type: new GraphQLList(NameType),
+      resolve(obj, args, { loaders }) {
+        return loaders.namesForContestIds.load(obj.id)
+      },
+    },
   },
 })
